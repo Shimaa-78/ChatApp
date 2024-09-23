@@ -16,13 +16,12 @@ class ChatScreen extends StatelessWidget {
       FirebaseFirestore.instance.collection('messages');
   final scrollController = ScrollController();
 
-
   var email;
-    @override
+  @override
   Widget build(BuildContext context) {
-     email= ModalRoute.of(context)!.settings.arguments;
+    email = ModalRoute.of(context)!.settings.arguments;
     return StreamBuilder<QuerySnapshot>(
-        stream: messages.orderBy("date",descending: true).snapshots(),
+        stream: messages.orderBy("date", descending: true).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<MessageModel> MesaagesList = [];
@@ -34,17 +33,20 @@ class ChatScreen extends StatelessWidget {
               backgroundColor: Color(0xffEDE7E7),
               appBar: AppBar(
                 automaticallyImplyLeading: false,
-                backgroundColor:  Color(0xff353D4A),
+                backgroundColor: Color(0xff353D4A),
                 title: Row(
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
+                      radius: 30,
                       child: Image.asset(
-                        "assets/Images/img.jpg",
-                        width: 80,
+                        "assets/Images/intelligent-clipart-intellect-12.png",
+                        width: 60,
                       ),
                     ),
-                    SizedBox(width: 7,),
+                    SizedBox(
+                      width: 7,
+                    ),
                     Text(
                       "Friends",
                       style: TextStyle(
@@ -57,13 +59,14 @@ class ChatScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      reverse:true ,
+                        reverse: true,
                         controller: scrollController,
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: ((context, index) {
-                          if(MesaagesList[index].id == email)
+                          if (MesaagesList[index].id == email)
                             return ChatBubble(msg: MesaagesList[index]);
-                          else return friendChatBubble(msg: MesaagesList[index]);
+                          else
+                            return friendChatBubble(msg: MesaagesList[index]);
                         })),
                   ),
                   Padding(
@@ -73,7 +76,6 @@ class ChatScreen extends StatelessWidget {
                       onSubmitted: (String val) {
                         meassageController.text = val;
                         _submitData();
-
                       },
                       decoration: InputDecoration(
                           hintText: "Enter a Message",
@@ -102,18 +104,15 @@ class ChatScreen extends StatelessWidget {
             return Text("");
         });
   }
-  void _submitData() {
 
+  void _submitData() {
     messages.add({
       'text': meassageController.text,
       "date": DateTime.now(),
-      "id":email,
+      "id": email,
     });
     meassageController.clear();
-    scrollController.animateTo(
-        0, duration: Duration(microseconds: 500),
-        curve: Curves.easeIn
-
-    );
+    scrollController.animateTo(0,
+        duration: Duration(microseconds: 500), curve: Curves.easeIn);
   }
 }
